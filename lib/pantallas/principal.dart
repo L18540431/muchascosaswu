@@ -13,7 +13,7 @@ class _PrincipalState extends State<Principal> {
   // Menus
   final List<Widget> _pages = [
     Center(child: Text("Inicio")),
-    Center(child: Text("contact")),
+    Center(child: Text("calendario")),
     ContactCard(
       name: "Agustin Morales",
       email: "L18540431@gmail.com",
@@ -41,6 +41,20 @@ class _PrincipalState extends State<Principal> {
     );
   }
 
+  // Función para mostrar el DatePicker
+  Future<void> _showDatePicker(BuildContext context) async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null && picked != DateTime.now()) {
+      // Aquí puedes hacer algo con la fecha seleccionada
+      print('Fecha seleccionada: $picked');
+    }
+  }
+
   // Cambiar menu
   void _onItemTapped(int index) {
     setState(() {
@@ -64,8 +78,8 @@ class _PrincipalState extends State<Principal> {
           ),
           // Botn 2
           BottomNavigationBarItem(
-            icon: Icon(Icons.emoji_emotions),
-            label: 'pagina1',
+            icon: Icon(Icons.calendar_month),
+            label: 'calendario',
           ),
           // Botn 3
           BottomNavigationBarItem(
@@ -74,7 +88,14 @@ class _PrincipalState extends State<Principal> {
           ),
         ],
         currentIndex: _selectedIndex, // item selected
-        onTap: _onItemTapped, // Clic 
+        onTap: (index) {
+          _onItemTapped(index);
+
+          // Agregar manejo específico para el ítem "pagina1"
+          if (index == 1) {
+            _showDatePicker(context);
+          }
+        }, // Clic 
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
