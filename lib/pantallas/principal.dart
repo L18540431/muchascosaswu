@@ -8,17 +8,19 @@ class Principal extends StatefulWidget {
 }
 
 class _PrincipalState extends State<Principal> {
-  int _selectedIndex = 0; // menu de barra seleccionado el 0
+  int _selectedIndex = 0; // menú de la barra seleccionado el 0
 
-  // menus
+  // Menús
   final List<Widget> _pages = [
-    
     Center(child: Text("Inicio")),
-    Center(child: Text("pagina2")),
-    Center(child: Text("p3")),
+    Center(child: Text("contact")),
+    ContactCard(
+      name: "Agustin Morales",
+      email: "L18540431@gmail.com",
+    ),
   ];
 
-  // alerta
+  // Alerta
   Future<void> _showAlertDialog(BuildContext context) async {
     return showDialog(
       context: context,
@@ -39,7 +41,7 @@ class _PrincipalState extends State<Principal> {
     );
   }
 
-  // cambiar menus
+  // Cambiar menús
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -52,38 +54,71 @@ class _PrincipalState extends State<Principal> {
       appBar: AppBar(
         title: Text("AgustinMorales App - muchas cosas wu!"),
       ),
-      body: _pages[_selectedIndex], // mostrar pagina actual
+      body: _pages[_selectedIndex], // Mostrar página actual
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
-          //boton de navegación 1
+          // Botón de navegación 1
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Inicio',
           ),
-              //boton de navegación 2
+          // Botón de navegación 2
           BottomNavigationBarItem(
             icon: Icon(Icons.emoji_emotions),
             label: 'pagina1',
           ),
-              //boton de navegación 3
+          // Botón de navegación 3
           BottomNavigationBarItem(
-            icon: Icon(Icons.emoji_emotions),
-            label: 'pagina2',
+            icon: Icon(Icons.contact_mail),
+            label: 'contacto',
           ),
         ],
-        currentIndex: _selectedIndex, // menu seleccionado
-        onTap: _onItemTapped, // clic en un ítem
+        currentIndex: _selectedIndex, // Menú seleccionado
+        onTap: _onItemTapped, // Clic en un ítem
       ),
-
-
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          //cuadro de dialog
+          // Cuadro de diálogo
           _showAlertDialog(context);
         },
-        child: 
-        Text("Tocar"),
-       
+        child: Text("Tocar"),
+      ),
+    );
+  }
+}
+
+class ContactCard extends StatelessWidget {
+  final String name;
+  final String email;
+
+  const ContactCard({Key? key, required this.name, required this.email}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Card(
+        elevation: 5,
+        margin: EdgeInsets.all(10),
+        child: Padding(
+          padding: EdgeInsets.all(10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                name,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 5),
+              Text(
+                email,
+                style: TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
