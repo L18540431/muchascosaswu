@@ -10,7 +10,7 @@ class Principal extends StatefulWidget {
 class _PrincipalState extends State<Principal> {
   int _selectedIndex = 0; // menú de la barra seleccionado el 0
 
-  // Menús
+  // Menus
   final List<Widget> _pages = [
     Center(child: Text("Inicio")),
     Center(child: Text("contact")),
@@ -20,7 +20,7 @@ class _PrincipalState extends State<Principal> {
     ),
   ];
 
-  // Alerta
+  // alert
   Future<void> _showAlertDialog(BuildContext context) async {
     return showDialog(
       context: context,
@@ -31,7 +31,7 @@ class _PrincipalState extends State<Principal> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Cierra el cuadro de diálogo
+                Navigator.of(context).pop(); // cierra el cuadro de alert
               },
               child: Text("¡Espera Jeffrey, tengo que tocarte!"),
             ),
@@ -41,7 +41,7 @@ class _PrincipalState extends State<Principal> {
     );
   }
 
-  // Cambiar menús
+  // Cambiar menu
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -57,28 +57,28 @@ class _PrincipalState extends State<Principal> {
       body: _pages[_selectedIndex], // Mostrar página actual
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
-          // Botón de navegación 1
+          // Botn 1
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Inicio',
           ),
-          // Botón de navegación 2
+          // Botn 2
           BottomNavigationBarItem(
             icon: Icon(Icons.emoji_emotions),
             label: 'pagina1',
           ),
-          // Botón de navegación 3
+          // Botn 3
           BottomNavigationBarItem(
             icon: Icon(Icons.contact_mail),
             label: 'contacto',
           ),
         ],
-        currentIndex: _selectedIndex, // Menú seleccionado
-        onTap: _onItemTapped, // Clic en un ítem
+        currentIndex: _selectedIndex, // item selected
+        onTap: _onItemTapped, // Clic 
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Cuadro de diálogo
+          // alert
           _showAlertDialog(context);
         },
         child: Text("Tocar"),
@@ -87,11 +87,18 @@ class _PrincipalState extends State<Principal> {
   }
 }
 
-class ContactCard extends StatelessWidget {
+class ContactCard extends StatefulWidget {
   final String name;
   final String email;
 
   const ContactCard({Key? key, required this.name, required this.email}) : super(key: key);
+
+  @override
+  _ContactCardState createState() => _ContactCardState();
+}
+
+class _ContactCardState extends State<ContactCard> {
+  bool _isFavorite = false;
 
   @override
   Widget build(BuildContext context) {
@@ -104,16 +111,29 @@ class ContactCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                name,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    widget.name,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Checkbox(
+                    value: _isFavorite,
+                    onChanged: (value) {
+                      setState(() {
+                        _isFavorite = value!;
+                      });
+                    },
+                  ),
+                ],
               ),
               SizedBox(height: 5),
               Text(
-                email,
+                widget.email,
                 style: TextStyle(fontSize: 16),
               ),
             ],
