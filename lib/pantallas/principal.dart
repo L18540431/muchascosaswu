@@ -8,7 +8,7 @@ class Principal extends StatefulWidget {
 }
 
 class _PrincipalState extends State<Principal> {
-  int _selectedIndex = 0; // menú de la barra seleccionado el 0
+  int _selectedIndex = 0; // menu de la barra seleccionado el 0
 
   // Menus
   final List<Widget> _pages = [
@@ -41,7 +41,7 @@ class _PrincipalState extends State<Principal> {
     );
   }
 
-  // Función para mostrar el DatePicker
+  // funcion para mostrar el DatePicker
   Future<void> _showDatePicker(BuildContext context) async {
     final picked = await showDatePicker(
       context: context,
@@ -50,12 +50,12 @@ class _PrincipalState extends State<Principal> {
       lastDate: DateTime(2101),
     );
     if (picked != null && picked != DateTime.now()) {
-      // Aquí puedes hacer algo con la fecha seleccionada
+      // fecha seleccionada
       print('Fecha seleccionada: $picked');
     }
   }
 
-  // Cambiar menu
+  // cambiar menu
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -68,34 +68,86 @@ class _PrincipalState extends State<Principal> {
       appBar: AppBar(
         title: Text("AgustinMorales App - muchas cosas wu!"),
       ),
-      body: _pages[_selectedIndex], // Mostrar página actual
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.purple,
+              ),
+              child: Text(
+                'Menu deslizable',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                ),
+              ),
+            ),
+
+
+
+
+            //lista de botones del menpu
+            ListTile(
+              title: Text('Inicio'),
+              onTap: () {
+                _onItemTapped(0);
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: Text('Calendario'),
+              onTap: () {
+                _onItemTapped(1);
+                Navigator.pop(context);
+                _showDatePicker(context);
+              },
+            ),
+            ListTile(
+              title: Text('Contacto'),
+              onTap: () {
+                _onItemTapped(2);
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      ),
+
+
+
+
+
+
+      body: _pages[_selectedIndex], // pagina actual
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
-          // Botn 1
+          // Botón 1
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Inicio',
           ),
-          // Botn 2
+          // Botón 2
           BottomNavigationBarItem(
             icon: Icon(Icons.calendar_month),
-            label: 'calendario',
+            label: 'Calendario',
           ),
-          // Botn 3
+          // Botón 3
           BottomNavigationBarItem(
             icon: Icon(Icons.contact_mail),
-            label: 'contacto',
+            label: 'Contacto',
           ),
         ],
         currentIndex: _selectedIndex, // item selected
         onTap: (index) {
           _onItemTapped(index);
 
-          // Agregar manejo específico para el ítem "pagina1"
+          // calendario - fecha seleccionada
           if (index == 1) {
             _showDatePicker(context);
           }
-        }, // Clic 
+        }, // clic
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -108,18 +160,12 @@ class _PrincipalState extends State<Principal> {
   }
 }
 
-class ContactCard extends StatefulWidget {
+class ContactCard extends StatelessWidget {
   final String name;
   final String email;
 
-  const ContactCard({Key? key, required this.name, required this.email}) : super(key: key);
-
-  @override
-  _ContactCardState createState() => _ContactCardState();
-}
-
-class _ContactCardState extends State<ContactCard> {
-  bool _isFavorite = false;
+  const ContactCard({Key? key, required this.name, required this.email})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -136,25 +182,21 @@ class _ContactCardState extends State<ContactCard> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    widget.name,
+                    name,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   Checkbox(
-                    value: _isFavorite,
-                    onChanged: (value) {
-                      setState(() {
-                        _isFavorite = value!;
-                      });
-                    },
+                    value: false,
+                    onChanged: (value) {},
                   ),
                 ],
               ),
               SizedBox(height: 5),
               Text(
-                widget.email,
+                email,
                 style: TextStyle(fontSize: 16),
               ),
             ],
