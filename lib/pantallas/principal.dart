@@ -8,19 +8,18 @@ class Principal extends StatefulWidget {
 }
 
 class _PrincipalState extends State<Principal> {
-  int _selectedIndex = 0; // menu de la barra seleccionado el 0
+  int _selectedIndex = 0; //menu de la barra seleccionado el 0
 
-  // Menus
+  //Menus
   final List<Widget> _pages = [
-    Center(child: Text("Inicio")),
-    Center(child: Text("calendario")),
+    Inicio(),
+    Center(child: Text("Calendario")),
     ContactCard(
       name: "Agustin Morales",
       email: "L18540431@gmail.com",
     ),
   ];
-
-  // alert
+  //alert
   Future<void> _showAlertDialog(BuildContext context) async {
     return showDialog(
       context: context,
@@ -31,7 +30,7 @@ class _PrincipalState extends State<Principal> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // cierra el cuadro de alert
+                Navigator.of(context).pop();
               },
               child: Text("¡Espera Jeffrey, tengo que tocarte!"),
             ),
@@ -40,7 +39,6 @@ class _PrincipalState extends State<Principal> {
       },
     );
   }
-
   // funcion para mostrar el DatePicker
   Future<void> _showDatePicker(BuildContext context) async {
     final picked = await showDatePicker(
@@ -50,7 +48,6 @@ class _PrincipalState extends State<Principal> {
       lastDate: DateTime(2101),
     );
     if (picked != null && picked != DateTime.now()) {
-      // fecha seleccionada
       print('Fecha seleccionada: $picked');
     }
   }
@@ -85,10 +82,7 @@ class _PrincipalState extends State<Principal> {
               ),
             ),
 
-
-
-
-            //lista de botones del menpu
+              //lista de botones del menpu
             ListTile(
               title: Text('Inicio'),
               onTap: () {
@@ -116,14 +110,10 @@ class _PrincipalState extends State<Principal> {
       ),
 
 
-
-
-
-
-      body: _pages[_selectedIndex], // pagina actual
+      body: _pages[_selectedIndex],//pagina actual
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
-          // Botón 1
+          //Botón 1
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Inicio',
@@ -133,25 +123,24 @@ class _PrincipalState extends State<Principal> {
             icon: Icon(Icons.calendar_month),
             label: 'Calendario',
           ),
-          // Botón 3
+         // Botón 3
           BottomNavigationBarItem(
             icon: Icon(Icons.contact_mail),
             label: 'Contacto',
           ),
         ],
-        currentIndex: _selectedIndex, // item selected
+        currentIndex: _selectedIndex,//item slected
         onTap: (index) {
           _onItemTapped(index);
-
-          // calendario - fecha seleccionada
+          //calendario - fecha seleccionada
           if (index == 1) {
             _showDatePicker(context);
-          }
-        }, // clic
+          }//clic
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // alert
+          //alert
           _showAlertDialog(context);
         },
         child: Text("Tocar"),
@@ -167,6 +156,7 @@ class ContactCard extends StatelessWidget {
   const ContactCard({Key? key, required this.name, required this.email})
       : super(key: key);
 
+//contacto 
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -205,4 +195,108 @@ class ContactCard extends StatelessWidget {
       ),
     );
   }
+}
+//lista
+class Inicio extends StatefulWidget {
+  @override
+  _InicioState createState() => _InicioState();
+}
+
+class _InicioState extends State<Inicio> {
+  int _selectedIndex = -1;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _articuloController = TextEditingController();
+  final List<Articulo> _listaArticulos = [];
+
+  void _agregarArticulo() {
+    if (_formKey.currentState!.validate()) {
+      final nombreArticulo = _articuloController.text;
+      setState(() {
+        _listaArticulos.add(Articulo(nombreArticulo, false));
+        _articuloController.clear();
+      });
+    }
+  }
+//dato para agregar
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: TextFormField(
+                controller: _articuloController,
+                decoration: InputDecoration(
+                  labelText: 'Agregue un dato',
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                  return 'dato vació';
+                  }
+
+                  return null;
+                },
+              ),
+            ),
+            ElevatedButton(
+              onPressed: _agregarArticulo,
+              child: Text('Agregar dato'),
+            ),
+            SizedBox(height: 20),
+            Text('!Lista datos agregados, al cambiar o salir de esta pantalla se borrará toda la lista'),
+            SizedBox(height: 10),
+            ListView.builder(
+              shrinkWrap: true,
+              itemCount: _listaArticulos.length,
+              itemBuilder: (context, index) {
+                final articulo = _listaArticulos[index];
+                return ListTile(
+                  leading: Radio(
+                    value: index,
+                    groupValue: _selectedIndex,
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedIndex = value!;
+                      });
+                    },
+                  ),
+                  title: Text(articulo.nombre),
+                  trailing: IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () {
+                      setState(() {
+                        _listaArticulos.removeAt(index);
+                        if (index == _selectedIndex) {
+                          _selectedIndex = -1;
+                        } else if (index < _selectedIndex) {
+                          _selectedIndex--;
+                        }
+                      });
+                    },
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class Articulo {
+  String nombre;
+  bool seleccionado;
+
+  Articulo(this.nombre, this.seleccionado);
+}
+
+void main() {
+  runApp(MaterialApp(
+    home: Principal(),
+  ));
 }
