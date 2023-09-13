@@ -217,10 +217,11 @@ class _InicioState extends State<Inicio> {
       });
     }
   }
-//dato para agregar
+//dato para
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      physics: AlwaysScrollableScrollPhysics(),
       child: Form(
         key: _formKey,
         child: Column(
@@ -235,9 +236,8 @@ class _InicioState extends State<Inicio> {
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                  return 'dato vació';
+                    return 'Dato vacío';
                   }
-
                   return null;
                 },
               ),
@@ -247,46 +247,54 @@ class _InicioState extends State<Inicio> {
               child: Text('Agregar dato'),
             ),
             SizedBox(height: 20),
-            Text('!Lista datos agregados, al cambiar o salir de esta pantalla se borrará toda la lista'),
+            Text('Lista datos agregados, al cambiar o salir de esta pantalla se borrarán todos los datos'),
             SizedBox(height: 10),
-            ListView.builder(
+            // Envuelve la ListView.builder con un ListView de tamaño fijo y scroll vertical.
+            ListView(
               shrinkWrap: true,
-              itemCount: _listaArticulos.length,
-              itemBuilder: (context, index) {
-                final articulo = _listaArticulos[index];
-                return ListTile(
-                  leading: Radio(
-                    value: index,
-                    groupValue: _selectedIndex,
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedIndex = value!;
-                      });
-                    },
-                  ),
-                  title: Text(articulo.nombre),
-                  trailing: IconButton(
-                    icon: Icon(Icons.delete),
-                    onPressed: () {
-                      setState(() {
-                        _listaArticulos.removeAt(index);
-                        if (index == _selectedIndex) {
-                          _selectedIndex = -1;
-                        } else if (index < _selectedIndex) {
-                          _selectedIndex--;
-                        }
-                      });
-                    },
-                  ),
-                );
-              },
+              scrollDirection: Axis.vertical, // Establece la dirección de desplazamiento a vertical.
+              children: [
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: _listaArticulos.length,
+                  itemBuilder: (context, index) {
+                    final articulo = _listaArticulos[index];
+                    return ListTile(
+                      leading: Radio(
+                        value: index,
+                        groupValue: _selectedIndex,
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedIndex = value!;
+                          });
+                        },
+                      ),
+                      title: Text(articulo.nombre),
+                      trailing: IconButton(
+                        icon: Icon(Icons.delete),
+                        onPressed: () {
+                          setState(() {
+                            _listaArticulos.removeAt(index);
+                            if (index == _selectedIndex) {
+                              _selectedIndex = -1;
+                            } else if (index < _selectedIndex) {
+                              _selectedIndex--;
+                            }
+                          });
+                        },
+                      ),
+                    );
+                  },
+                ),
+              ],
             ),
           ],
         ),
       ),
     );
   }
-}
+}   
+
 
 class Articulo {
   String nombre;
